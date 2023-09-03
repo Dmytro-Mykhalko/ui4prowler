@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="templates/styles.css" />
+    <script src="templates/main.js"></script>
+    <title>ui4prowler report</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <div class="container">
+                <div class="logo">
+                    <p>ui4prowler</p>
+                </div>
+                <div class="provider">
+                    {% for key, value in provider.items() %}
+                        <p>{{ key }}: {{ value }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div class="container">
+                <div class="content">
+                    <section id="dashboard" class="dashboard">
+                        <h1>Dashboard</h1>
+                        <div class="dashboard-table">
+                            <div class="dashboard-table-head">
+                              <div class="dashboard-table-item">Service</div>
+                              <div class="dashboard-table-item">Findings</div>
+                              <div class="dashboard-table-item">Checks</div>
+                            </div>
+                            <div class="dashboard-table-body">
+                                {% for key, value in service_count.items() %}
+                                    <a href="#{{ key }}" class="dashboard-table-row {{ value['Severity'] }}">
+                                        <div class="dashboard-table-item">{{ key }}</div>
+                                        <div class="dashboard-table-item">{{ value['Findings'] }}</div>
+                                        <div class="dashboard-table-item">{{ value['Checks'] }}</div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div> 
+                    </section>
+                {% for service_name, check_list in services.items() %}
+                    <section id="{{ service_name }}" class="service_section {{ service_name }}">
+                        <div class="breadcrumbs">
+                            <a href="">Dashboard</a>
+                        </div>
+                        <div id="dashboard" class="dashboard">
+                            <h1>{{ service_name }}</h1>
+                            <div class="accordion">
+                                {% for check in check_list %}
+                                    <div class="accordion-item check-{{ check['Status'] }}">
+                                        <div class="accordion-item-title">
+                                            <span>{{ check['CheckTitle'] }}</span>
+                                            {% if check['Status'] != "PASS" %}
+                                                <div class="status status-{{check['Severity']}}">{{ check['Severity'] }}</div>
+                                            {% endif %}
+                                            <div class="icon">
+                                            <span></span>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item-content">
+                                            <strong>Risk:</strong>
+                                            <p>{{ check['Risk'] }}</p>
+                                            <strong>Recommendation:</strong>
+                                            <p>{{ check['Recommendation']['Text'] }} <a class="recommendation_url" href="{{ check['Recommendation']['Url'] }}" target="_blank" rel="noopener noreferrer">(Reference)</a></p>
+                                            {% if check['Status'] != "PASS" %}
+                                                <strong>Affected Resources:</strong>
+                                                {% for finding in check.get('Findings') %}
+                                                    {% if finding['Status'] != "PASS" %}
+                                                        <div class="finding-{{ finding['Status'] }}">
+                                                            <strong>
+                                                                Region:&nbsp;
+                                                                <span>{{ finding['Region'] }}</span>
+                                                            </strong>
+                                                            <strong>
+                                                                ResourceArn:&nbsp;
+                                                                <a title="Click to copy Arn." onclick="copyToClipboard(`{{ finding['ResourceArn'] }}`)"><span>{{ finding['ResourceArn'] }}</span></a>
+                                                            </strong>
+                                                            <strong>
+                                                                Status Extended:&nbsp;
+                                                                <span>{{ finding['StatusExtended'] }}</span>
+                                                            </strong>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </section>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="container">
+                <p>Provided by&nbsp;<a href="https://www.linkedin.com/in/dmytro-m-977a22254/">d.mykhalko</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
