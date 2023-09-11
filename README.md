@@ -10,7 +10,7 @@ The ui4prowler is a visulation tool that makes it easier and more effective to r
 
 Python >= 3.9 is required with pip:
 ```bash
-git clone https://github.com/yourusername/prowler-visualizer.git
+git clone https://github.com/Dmytro-Mykhalko/ui4prowler.git
 cd ui4prowler
 pip install requirements.txt
 python ui4prowler.py -h
